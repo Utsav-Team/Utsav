@@ -1,93 +1,97 @@
 import React from 'react';
-import {
-  Platform,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {StatusBar, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import * as Animatable from 'react-native-animatable';
+import CodeInput from 'react-native-confirmation-code-input';
+import CountDown from 'react-native-countdown-component';
 import LinearGradient from 'react-native-linear-gradient';
-import {useTheme} from 'react-native-paper';
-import Feather from 'react-native-vector-icons/Feather';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {Button, useTheme} from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import styles from './SignInScreenStyles';
 
 const SignInScreen = ({navigation}) => {
-  const [data, setData] = React.useState({
-    username: '',
-    password: '',
-    check_textInputChange: false,
-    secureTextEntry: true,
-    isValidUser: true,
-    isValidPassword: true,
-  });
 
   const {colors} = useTheme();
+  const otpRef = React.useRef();
 
-  const textInputChange = (val) => {
-    if (val.trim().length >= 4) {
+  const [data, setData] = React.useState({
+    phoneNumber: '',
+    check_numberInputChange: false,
+    showInvalidNumberError: false,
+  });
+
+  const [showOtpBox, setShowOtpBox] = React.useState(false);
+  const [counter, SetCounter] = React.useState(5);
+  const [disabled, setDisabled] = React.useState(true);
+  const [signInButtonDisabled, setSignInButtonDisabled] = React.useState(true);
+  const [signInButtonText, setSignInButtonText] = React.useState('Send OTP');
+  const [wrongOtpError, setWrongOtpError] = React.useState(false);
+
+  const handleNumberInputChange = (val) => {
+    if (val.trim().length == 10) {
       setData({
         ...data,
-        username: val,
-        check_textInputChange: true,
-        isValidUser: true,
+        phoneNumber: val,
+        check_numberInputChange: true,
       });
+      setSignInButtonDisabled(false);
     } else {
       setData({
         ...data,
-        username: val,
-        check_textInputChange: false,
-        isValidUser: false,
+        phoneNumber: val,
+        check_numberInputChange: false,
+        showInvalidNumberError: true,
       });
+      setSignInButtonDisabled(true);
     }
   };
 
-  const handlePasswordChange = (val) => {
-    if (val.trim().length >= 8) {
-      setData({
-        ...data,
-        password: val,
-        isValidPassword: true,
-      });
-    } else {
-      setData({
-        ...data,
-        password: val,
-        isValidPassword: false,
-      });
-    }
+  const handleSendOtpButtonClick = () => {
+    // Write code to send otp
+    setSignInButtonText('Sign In');
+    setShowOtpBox(true);
+    setSignInButtonDisabled(true);
   };
 
-  const updateSecureTextEntry = () => {
+  const handleChangePhoneNumberClick = () => {
+    setShowOtpBox(false);
     setData({
-      ...data,
-      secureTextEntry: !data.secureTextEntry,
+      phoneNumber: '',
+      check_numberInputChange: false,
+      showInvalidNumberError: false,
     });
+    setSignInButtonText('Send OTP');
+    setSignInButtonDisabled(false);
+  }
+
+  const handleResendOtp = () => {
+    // Write code to send a new otp
+    otpRef.current.clear();
+    setWrongOtpError(false);
+    SetCounter(5);
+    setDisabled(true);
+    setSignInButtonDisabled(true);
   };
 
-  const handleValidUser = (val) => {
-    if (val.trim().length >= 4) {
-      setData({
-        ...data,
-        isValidUser: true,
-      });
-    } else {
-      setData({
-        ...data,
-        isValidUser: false,
-      });
+  const handleOtpVerification = (otp) => {
+    // Write code to verify with correct otp
+    if (otp === '123456') {
+      setSignInButtonDisabled(false);
+      setWrongOtpError(false);
+      return;
     }
+    setSignInButtonDisabled(true);
+    setWrongOtpError(true);
   };
 
-  const loginHandle = (userName, password) => {};
+  const handleSignInButtonClick = () => {
+    alert('Signed In');
+  }
 
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#009387" barStyle="light-content" />
       <View style={styles.header}>
-        <Text style={styles.text_header}>Welcome!</Text>
+        <Text style={styles.text_header}>Sign In</Text>
       </View>
       <Animatable.View
         animation="fadeInUpBig"
@@ -106,89 +110,139 @@ const SignInScreen = ({navigation}) => {
           ]}>
           Phone Number
         </Text>
-        <View style={styles.action}>
-          <FontAwesome name="user-o" color={colors.text} size={20} />
-          <TextInput
-            placeholder="Your Username"
-            placeholderTextColor="#666666"
-            style={[
-              styles.textInput,
+        <View style={!data.check_numberInputChange && data.showInvalidNumberError ? styles.actionError : styles.action}>
+          <Icon name="phone-outline" color="#05375a" size={30} />
+          <Text
+            style={showOtpBox ? [
+              styles.isoCode,
+              {
+                color: '#aaaaa0'
+              },
+            ] : 
+            [
+              styles.isoCode,
               {
                 color: colors.text,
               },
-            ]}
-            autoCapitalize="none"
-            onChangeText={(val) => textInputChange(val)}
-            onEndEditing={(e) => handleValidUser(e.nativeEvent.text)}
-          />
-          {data.check_textInputChange ? (
-            <Animatable.View animation="bounceIn">
-              <Feather name="check-circle" color="green" size={20} />
-            </Animatable.View>
-          ) : null}
-        </View>
-        {data.isValidUser ? null : (
-          <Animatable.View animation="fadeInLeft" duration={500}>
-            <Text style={styles.errorMsg}>
-              Username must be 4 characters long.
-            </Text>
-          </Animatable.View>
-        )}
-
-        <Text
-          style={[
-            styles.text_footer,
-            {
-              color: colors.text,
-              marginTop: 35,
-            },
-          ]}>
-          Password
-        </Text>
-        <View style={styles.action}>
-          <Feather name="lock" color={colors.text} size={20} />
-          <TextInput
-            placeholder="Your Password"
-            placeholderTextColor="#666666"
-            secureTextEntry={data.secureTextEntry ? true : false}
-            style={[
-              styles.textInput,
-              {
-                color: colors.text,
-              },
-            ]}
-            autoCapitalize="none"
-            onChangeText={(val) => handlePasswordChange(val)}
-          />
-          <TouchableOpacity onPress={updateSecureTextEntry}>
-            {data.secureTextEntry ? (
-              <Feather name="eye-off" color="grey" size={20} />
-            ) : (
-              <Feather name="eye" color="grey" size={20} />
-            )}
-          </TouchableOpacity>
-        </View>
-        {data.isValidPassword ? null : (
-          <Animatable.View animation="fadeInLeft" duration={500}>
-            <Text style={styles.errorMsg}>
-              Password must be 8 characters long.
-            </Text>
-          </Animatable.View>
-        )}
-
-        <TouchableOpacity>
-          <Text style={{color: '#009387', marginTop: 15}}>
-            Forgot password?
+            ]}>
+            +91
           </Text>
-        </TouchableOpacity>
+          <TextInput
+            placeholder="Registered phone number"
+            placeholderTextColor="#666666"
+            keyboardType="phone-pad"
+            maxLength={10}
+            style={showOtpBox ? [
+              styles.textInput,
+              {
+                color: '#aaaaa0'
+              },
+            ] : 
+            [
+              styles.textInput,
+              {
+                color: colors.text,
+              },
+            ]}
+            value={data.phoneNumber}
+            onChangeText={(val) => handleNumberInputChange(val)}
+            editable={!showOtpBox}
+          />
+          {data.check_numberInputChange && (
+            <Animatable.View animation="bounceIn">
+              <Icon name="phone-check-outline" color="green" size={20} />
+            </Animatable.View>
+          )}
+        </View>
+
+        {!data.check_numberInputChange && data.showInvalidNumberError && (
+          <Animatable.View animation="fadeInLeft" duration={500}>
+            <Text style={styles.errorMsg}>
+              Please enter a valid phone number
+            </Text>
+          </Animatable.View>
+        )}
+
+        {showOtpBox && (
+          <Animatable.View animation="fadeInDown" duration={300}>
+            <Text
+              style={[
+                styles.text_footer,
+                {
+                  color: colors.text,
+                  marginTop: 20,
+                },
+              ]}>
+              OTP
+            </Text>
+            <View style={styles.otp}>
+              <Icon name="lock-outline" color="#05375a" size={30} />
+              <View style={{marginLeft: 10, alignSelf: 'baseline'}}>
+                <CodeInput
+                  ref={otpRef}
+                  secureTextEntry
+                  className={'border-b'}
+                  activeColor={wrongOtpError ? '#FF0000' : "rgba(0, 0, 0, 1)"}
+                  inactiveColor={wrongOtpError ? '#FF0000' : "rgba(0, 0, 0, 1)"}
+                  space={10}
+                  keyboardType="numeric"
+                  // autoFocus={true}
+                  codeLength={6}
+                  size={20}
+                  inputPosition="left"
+                  onFulfill={(code) => handleOtpVerification(code)}
+                  onFocus={() => setHideButtons(true)}
+                />
+              </View>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                }}>
+                {disabled ? (
+                  <CountDown
+                    until={counter}
+                    size={15}
+                    onFinish={() => setDisabled(() => false)}
+                    separatorStyle={{color: 'black'}}
+                    digitStyle={{backgroundColor: '#f6f6f6'}}
+                    digitTxtStyle={{
+                      color: 'black',
+                      fontWeight: '100',
+                      fontSize: 14,
+                    }}
+                    timeToShow={['M', 'S']}
+                    showSeparator
+                    timeLabels={{m: '', s: ''}}
+                  />
+                ) : (
+                  <Button mode="text" onPress={handleResendOtp}>
+                    RESEND
+                  </Button>
+                )}
+              </View>
+            </View>
+            {wrongOtpError && (
+              <Animatable.View animation="wobble">
+                <Text style={styles.errorMsg}>Please enter correct OTP</Text>
+              </Animatable.View>
+            )}
+            <TouchableOpacity onPress={handleChangePhoneNumberClick} >
+                <Text style={{color: '#009387', marginTop:15}}>Change phone number?</Text>
+            </TouchableOpacity>
+          </Animatable.View>
+        )}
+
         <View style={styles.button}>
           <TouchableOpacity
             style={styles.signIn}
-            onPress={() => {
-              loginHandle(data.username, data.password);
-            }}>
+            onPress={showOtpBox ? handleSignInButtonClick : handleSendOtpButtonClick}
+            disabled={signInButtonDisabled}>
             <LinearGradient
-              colors={['#08d4c4', '#01ab9d']}
+              colors={
+                signInButtonDisabled ? ['#aaa', '#bbb'] : ['#08d4c4', '#01ab9d']
+              }
               style={styles.signIn}>
               <Text
                 style={[
@@ -197,7 +251,7 @@ const SignInScreen = ({navigation}) => {
                     color: '#fff',
                   },
                 ]}>
-                Sign In
+                {signInButtonText}
               </Text>
             </LinearGradient>
           </TouchableOpacity>
@@ -208,7 +262,7 @@ const SignInScreen = ({navigation}) => {
               styles.signIn,
               {
                 borderColor: '#009387',
-                borderWidth: 1,
+                borderWidth: 2,
                 marginTop: 15,
               },
             ]}>
@@ -229,72 +283,3 @@ const SignInScreen = ({navigation}) => {
 };
 
 export default SignInScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#009387',
-  },
-  header: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    paddingHorizontal: 20,
-    paddingBottom: 50,
-  },
-  footer: {
-    flex: 3,
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    paddingHorizontal: 20,
-    paddingVertical: 30,
-  },
-  text_header: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 30,
-  },
-  text_footer: {
-    color: '#05375a',
-    fontSize: 18,
-  },
-  action: {
-    flexDirection: 'row',
-    marginTop: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f2f2f2',
-    paddingBottom: 5,
-  },
-  actionError: {
-    flexDirection: 'row',
-    marginTop: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#FF0000',
-    paddingBottom: 5,
-  },
-  textInput: {
-    flex: 1,
-    marginTop: Platform.OS === 'ios' ? 0 : -12,
-    paddingLeft: 10,
-    color: '#05375a',
-  },
-  errorMsg: {
-    color: '#FF0000',
-    fontSize: 14,
-  },
-  button: {
-    alignItems: 'center',
-    marginTop: 50,
-  },
-  signIn: {
-    width: '100%',
-    height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-  },
-  textSign: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-});

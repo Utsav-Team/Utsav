@@ -11,10 +11,10 @@ import {
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import UtsavLogo from '../assets/Utsav_logo.jpeg';
 
 const SplashScreen = ({navigation}) => {
   const {colors} = useTheme();
-
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#009387" barStyle="light-content" />
@@ -22,7 +22,7 @@ const SplashScreen = ({navigation}) => {
         <Animatable.Image
           animation="bounceIn"
           duraton="1500"
-          source={require('../assets/Utsav_logo.jpeg')}
+          source={UtsavLogo}
           style={styles.logo}
           resizeMode="stretch"
         />

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "624589678466",
+    "project_id": "utsav-2a1af",
+    "storage_bucket": "utsav-2a1af.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:624589678466:android:f0da55cd1c2df2252b519b",
+        "android_client_info": {
+          "package_name": "com.utsav"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "624589678466-h53voricvemjip2m2a19k32fndje258b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.utsav",
+            "certificate_hash": "c693a1144015b96acc8f66d61f8e7325b1ebcb67"
+          }
+        },
+        {
+          "client_id": "624589678466-h3t0qpi7fn5p8v8v118bekni36h37j0i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhCn95Pf-LevpluXOKFCD-k7hdG9IypFI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "624589678466-h3t0qpi7fn5p8v8v118bekni36h37j0i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,71 +1,140 @@
 import React from 'react';
 import {
-  Platform,
   ScrollView,
   StatusBar,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
+import CodeInput from 'react-native-confirmation-code-input';
+import CountDown from 'react-native-countdown-component';
 import LinearGradient from 'react-native-linear-gradient';
+import {Button, useTheme} from 'react-native-paper';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import styles from './SignUpScreenStyles';
+import firebaseSetup from '../../firebase';
 
 const SignUpScreen = ({navigation}) => {
+  const {colors} = useTheme();
+  const otpRef = React.useRef();
+  const {auth} = firebaseSetup();
+
   const [data, setData] = React.useState({
-    username: '',
-    password: '',
-    confirm_password: '',
-    check_textInputChange: false,
-    secureTextEntry: true,
-    confirm_secureTextEntry: true,
+    fullName: '',
+    phoneNumber: '',
+    check_nameInputChange: false,
+    check_numberInputChange: false,
+    showInvalidNameError: false,
+    showInvalidNumberError: false,
   });
 
-  const textInputChange = (val) => {
-    if (val.length !== 0) {
+  const [resendDisabled, setResendDisabled] = React.useState(false);
+  const [showOtpBox, setShowOtpBox] = React.useState(false);
+  const [counter, SetCounter] = React.useState(5);
+  const [signUpButtonText, setSignUpButtonText] = React.useState('Send OTP');
+  const [signUpButtonDisabled, setSignUpButtonDisabled] = React.useState(true);
+  const [wrongOtpError, setWrongOtpError] = React.useState(false);
+  const [firebaseConfirm, setFirebaseConfirm] = React.useState(null);
+
+  const handleNameInputChange = (val) => {
+    if (val.length > 2) {
       setData({
         ...data,
-        username: val,
-        check_textInputChange: true,
+        fullName: val,
+        check_nameInputChange: true,
       });
+
+      if (data.check_numberInputChange) {
+        setSignUpButtonDisabled(false);
+      }
     } else {
       setData({
         ...data,
-        username: val,
-        check_textInputChange: false,
+        fullName: val,
+        check_nameInputChange: false,
+        showInvalidNameError: true,
       });
+      setSignUpButtonDisabled(true);
     }
   };
 
-  const handlePasswordChange = (val) => {
-    setData({
-      ...data,
-      password: val,
-    });
+  const handleNumberInputChange = (val) => {
+    if (val.length == 10) {
+      setData({
+        ...data,
+        phoneNumber: val,
+        check_numberInputChange: true,
+      });
+
+      if (data.check_nameInputChange) {
+        setSignUpButtonDisabled(false);
+      }
+    } else {
+      setData({
+        ...data,
+        phoneNumber: val,
+        check_numberInputChange: false,
+        showInvalidNumberError: true,
+      });
+      setSignUpButtonDisabled(true);
+    }
   };
 
-  const handleConfirmPasswordChange = (val) => {
-    setData({
-      ...data,
-      confirm_password: val,
-    });
+  const handleSendOtpButtonClick = async () => {
+    setSignUpButtonDisabled(true);
+    const confirmation = await auth().signInWithPhoneNumber(data.phoneNumber);
+    if (confirmation) {
+      setFirebaseConfirm(confirmation);
+      setSignUpButtonText('Sign Up');
+      setShowOtpBox(true);
+    } else {
+      setSignUpButtonDisabled(false);
+    }
   };
 
-  const updateSecureTextEntry = () => {
-    setData({
-      ...data,
-      secureTextEntry: !data.secureTextEntry,
-    });
+  const handleChangeDetailsClick = () => {
+    setShowOtpBox(false);
+    setSignUpButtonText('Send OTP');
+    setSignUpButtonDisabled(false);
   };
 
-  const updateConfirmSecureTextEntry = () => {
-    setData({
-      ...data,
-      confirm_secureTextEntry: !data.confirm_secureTextEntry,
-    });
+  const handleResend = async () => {
+    // Handle Resend otp action here
+    otpRef.current.clear();
+    setWrongOtpError(false);
+    const confirmation = await auth().signInWithPhoneNumber(data.phoneNumber);
+    setResendDisabled(true);
+    if(confirmation) {
+    SetCounter(5);
+    setFirebaseConfirm(confirmation);
+    }
+  };
+
+  const handleOtpVerification = async (otp) => {
+    // Write code to verify with correct otp
+    // if (otp === '123456') {
+    //   setSignUpButtonDisabled(false);
+    //   setWrongOtpError(false);
+    //   return;
+    // }
+    try{
+      await firebaseConfirm.confirm(otp);
+      setSignUpButtonDisabled(false);
+      setWrongOtpError(false);
+    }
+    catch(err){
+      console.log(JSON.stringify(err));
+      setSignUpButtonDisabled(true);
+      setWrongOtpError(true);
+    }
+  };
+
+  const handleSignInButtonClick = () => {
+    alert('Signed Up');
   };
 
   return (
@@ -75,22 +144,50 @@ const SignUpScreen = ({navigation}) => {
         <Text style={styles.text_header}>Register Now!</Text>
       </View>
       <Animatable.View animation="fadeInUpBig" style={styles.footer}>
-        <ScrollView>
-          <Text style={styles.text_footer}>Username</Text>
-          <View style={styles.action}>
-            <FontAwesome name="user-o" color="#05375a" size={20} />
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Text style={styles.text_footer}>Full Name</Text>
+          <View
+            style={
+              !data.check_nameInputChange && data.showInvalidNameError
+                ? styles.actionError
+                : styles.action
+            }>
+            <AntDesign name="adduser" color="#05375a" size={30} />
             <TextInput
-              placeholder="Your Username"
-              style={styles.textInput}
+              placeholder="Enter your full name"
+              style={
+                showOtpBox
+                  ? [
+                      styles.textInput,
+                      {
+                        color: '#aaaaa0',
+                      },
+                    ]
+                  : [
+                      styles.textInput,
+                      {
+                        color: colors.text,
+                      },
+                    ]
+              }
               autoCapitalize="none"
-              onChangeText={(val) => textInputChange(val)}
+              onChangeText={(val) => handleNameInputChange(val)}
+              value={data.fullName}
+              editable={!showOtpBox}
             />
-            {data.check_textInputChange ? (
+            {data.check_nameInputChange && (
               <Animatable.View animation="bounceIn">
-                <Feather name="check-circle" color="green" size={20} />
+                <Feather name="user-check" color="green" size={20} />
               </Animatable.View>
-            ) : null}
+            )}
           </View>
+          {!data.check_nameInputChange && data.showInvalidNameError && (
+            <Animatable.View animation="fadeInLeft" duration={500}>
+              <Text style={styles.errorMsg}>
+                Name should be atleast 3 characters long
+              </Text>
+            </Animatable.View>
+          )}
 
           <Text
             style={[
@@ -99,52 +196,158 @@ const SignUpScreen = ({navigation}) => {
                 marginTop: 35,
               },
             ]}>
-            Password
+            Phone Number
           </Text>
-          <View style={styles.action}>
-            <Feather name="lock" color="#05375a" size={20} />
-            <TextInput
-              placeholder="Your Password"
-              secureTextEntry={data.secureTextEntry ? true : false}
-              style={styles.textInput}
-              autoCapitalize="none"
-              onChangeText={(val) => handlePasswordChange(val)}
+          <View
+            style={
+              !data.check_numberInputChange && data.showInvalidNumberError
+                ? styles.actionError
+                : styles.action
+            }>
+            <MaterialCommunityIcon
+              name="phone-outline"
+              color="#05375a"
+              size={30}
             />
-            <TouchableOpacity onPress={updateSecureTextEntry}>
-              {data.secureTextEntry ? (
-                <Feather name="eye-off" color="grey" size={20} />
-              ) : (
-                <Feather name="eye" color="grey" size={20} />
-              )}
-            </TouchableOpacity>
+            <Text
+              style={
+                showOtpBox
+                  ? [
+                      styles.isoCode,
+                      {
+                        color: '#aaaaa0',
+                      },
+                    ]
+                  : [
+                      styles.isoCode,
+                      {
+                        color: colors.text,
+                      },
+                    ]
+              }>
+              +91
+            </Text>
+            <TextInput
+              placeholder="Enter your phone number"
+              keyboardType="number-pad"
+              maxLength={10}
+              style={
+                showOtpBox
+                  ? [
+                      styles.textInput,
+                      {
+                        color: '#aaaaa0',
+                      },
+                    ]
+                  : [
+                      styles.textInput,
+                      {
+                        color: colors.text,
+                      },
+                    ]
+              }
+              onChangeText={(val) => handleNumberInputChange(val)}
+              value={data.phoneNumber}
+              editable={!showOtpBox}
+            />
+            {data.check_numberInputChange && (
+              <Animatable.View animation="bounceIn">
+                <MaterialCommunityIcon
+                  name="phone-check-outline"
+                  color="green"
+                  size={20}
+                />
+              </Animatable.View>
+            )}
           </View>
 
-          <Text
-            style={[
-              styles.text_footer,
-              {
-                marginTop: 35,
-              },
-            ]}>
-            Confirm Password
-          </Text>
-          <View style={styles.action}>
-            <Feather name="lock" color="#05375a" size={20} />
-            <TextInput
-              placeholder="Confirm Your Password"
-              secureTextEntry={data.confirm_secureTextEntry ? true : false}
-              style={styles.textInput}
-              autoCapitalize="none"
-              onChangeText={(val) => handleConfirmPasswordChange(val)}
-            />
-            <TouchableOpacity onPress={updateConfirmSecureTextEntry}>
-              {data.secureTextEntry ? (
-                <Feather name="eye-off" color="grey" size={20} />
-              ) : (
-                <Feather name="eye" color="grey" size={20} />
+          {!data.check_numberInputChange && data.showInvalidNumberError && (
+            <Animatable.View animation="fadeInLeft" duration={500}>
+              <Text style={styles.errorMsg}>
+                Please enter a valid phone number
+              </Text>
+            </Animatable.View>
+          )}
+
+          {showOtpBox && (
+            <Animatable.View animation="fadeIn" duration={300}>
+              <Text
+                style={[
+                  styles.text_footer,
+                  {
+                    color: colors.text,
+                    marginTop: 20,
+                  },
+                ]}>
+                OTP
+              </Text>
+              <View style={styles.otp}>
+                <MaterialCommunityIcon
+                  name="lock-outline"
+                  color="#05375a"
+                  size={30}
+                />
+                <View style={{marginLeft: 10, alignSelf: 'baseline'}}>
+                  <CodeInput
+                    ref={otpRef}
+                    secureTextEntry
+                    className={'border-b'}
+                    activeColor={wrongOtpError ? '#FF0000' : 'rgba(0, 0, 0, 1)'}
+                    inactiveColor={
+                      wrongOtpError ? '#FF0000' : 'rgba(0, 0, 0, 1)'
+                    }
+                    space={10}
+                    keyboardType="numeric"
+                    // autoFocus={true}
+                    codeLength={6}
+                    size={20}
+                    inputPosition="left"
+                    onFulfill={(code) => handleOtpVerification(code)}
+                    onFocus={() => setHideButtons(true)}
+                  />
+                </View>
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                  }}>
+                  {resendDisabled ? (
+                    <CountDown
+                      until={counter}
+                      size={15}
+                      onFinish={() => setResendDisabled(() => false)}
+                      separatorStyle={{color: 'black'}}
+                      digitStyle={{backgroundColor: '#ffffff'}}
+                      digitTxtStyle={{
+                        color: 'black',
+                        fontWeight: '100',
+                        fontSize: 14,
+                      }}
+                      timeToShow={['M', 'S']}
+                      showSeparator
+                      timeLabels={{m: '', s: ''}}
+                    />
+                  ) : (
+                    <Button mode="text" onPress={handleResend}>
+                      RESEND
+                    </Button>
+                  )}
+                </View>
+              </View>
+              {wrongOtpError && (
+                <Animatable.View animation="wobble">
+                  <Text style={styles.errorMsg}>Please enter correct OTP</Text>
+                </Animatable.View>
               )}
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity onPress={handleChangeDetailsClick}>
+                <Text style={{color: '#009387', marginTop: 15}}>
+                  Change details?
+                </Text>
+              </TouchableOpacity>
+            </Animatable.View>
+          )}
+
           <View style={styles.textPrivate}>
             <Text style={styles.color_textPrivate}>
               By signing up you agree to our
@@ -160,9 +363,18 @@ const SignUpScreen = ({navigation}) => {
             </Text>
           </View>
           <View style={styles.button}>
-            <TouchableOpacity style={styles.signIn} onPress={() => {}}>
+            <TouchableOpacity
+              style={styles.signIn}
+              onPress={
+                showOtpBox ? handleSignInButtonClick : handleSendOtpButtonClick
+              }
+              disabled={signUpButtonDisabled}>
               <LinearGradient
-                colors={['#08d4c4', '#01ab9d']}
+                colors={
+                  signUpButtonDisabled
+                    ? ['#aaa', '#bbb']
+                    : ['#08d4c4', '#01ab9d']
+                }
                 style={styles.signIn}>
                 <Text
                   style={[
@@ -171,18 +383,18 @@ const SignUpScreen = ({navigation}) => {
                       color: '#fff',
                     },
                   ]}>
-                  Sign Up
+                  {signUpButtonText}
                 </Text>
               </LinearGradient>
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => navigation.goBack()}
+              onPress={() => navigation.navigate('SignInScreen')}
               style={[
                 styles.signIn,
                 {
                   borderColor: '#009387',
-                  borderWidth: 1,
+                  borderWidth: 2,
                   marginTop: 15,
                 },
               ]}>
@@ -204,69 +416,3 @@ const SignUpScreen = ({navigation}) => {
 };
 
 export default SignUpScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#009387',
-  },
-  header: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    paddingHorizontal: 20,
-    paddingBottom: 50,
-  },
-  footer: {
-    flex: Platform.OS === 'ios' ? 3 : 5,
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    paddingHorizontal: 20,
-    paddingVertical: 30,
-  },
-  text_header: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 30,
-  },
-  text_footer: {
-    color: '#05375a',
-    fontSize: 18,
-  },
-  action: {
-    flexDirection: 'row',
-    marginTop: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f2f2f2',
-    paddingBottom: 5,
-  },
-  textInput: {
-    flex: 1,
-    marginTop: Platform.OS === 'ios' ? 0 : -12,
-    paddingLeft: 10,
-    color: '#05375a',
-  },
-  button: {
-    alignItems: 'center',
-    marginTop: 50,
-  },
-  signIn: {
-    width: '100%',
-    height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-  },
-  textSign: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  textPrivate: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginTop: 20,
-  },
-  color_textPrivate: {
-    color: 'grey',
-  },
-});
