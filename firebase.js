@@ -3,13 +3,13 @@ import firebase from '@react-native-firebase/app';
 import auth from '@react-native-firebase/auth';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyBowDbf0qIf6OyRa1vw_aVxxnZ_trqmQqs',
-  authDomain: 'utsav-2a1af.firebaseapp.com',
-  projectId: 'utsav-2a1af',
-  storageBucket: 'utsav-2a1af.appspot.com',
-  messagingSenderId: '624589678466',
-  appId: '1:624589678466:web:7401f866634e8fc12b519b',
-  measurementId: 'G-3ZF7LY2QZE',
+  apiKey: 'AIzaSyCHNZsw0DF9ljSAZ49amQPOsSrtLfI9cgA',
+  authDomain: 'utsav-b38ac.firebaseapp.com',
+  projectId: 'utsav-b38ac',
+  storageBucket: 'utsav-b38ac.appspot.com',
+  messagingSenderId: '125629524973',
+  appId: '1:125629524973:web:ba1be23c4a8821af0055e4',
+  measurementId: 'G-7ZBRT62H06',
 };
 
 if (!firebase.auth.length) {
@@ -17,5 +17,5 @@ if (!firebase.auth.length) {
 }
 
 export default () => {
-  return {firebase, auth};
+  return {firebase, auth, firebaseConfig};
 };

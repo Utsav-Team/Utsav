@@ -18,10 +18,12 @@ import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIc
 import styles from './SignUpScreenStyles';
 import firebaseSetup from '../../firebase';
 
+const COUNTRY_CODE_IN = '+91';
+
 const SignUpScreen = ({navigation}) => {
   const {colors} = useTheme();
   const otpRef = React.useRef();
-  const {auth} = firebaseSetup();
+  const {firebase} = firebaseSetup();
 
   const [data, setData] = React.useState({
     fullName: '',
@@ -34,11 +36,12 @@ const SignUpScreen = ({navigation}) => {
 
   const [resendDisabled, setResendDisabled] = React.useState(false);
   const [showOtpBox, setShowOtpBox] = React.useState(false);
-  const [counter, SetCounter] = React.useState(5);
+  const [counter, SetCounter] = React.useState(10);
   const [signUpButtonText, setSignUpButtonText] = React.useState('Send OTP');
   const [signUpButtonDisabled, setSignUpButtonDisabled] = React.useState(true);
   const [wrongOtpError, setWrongOtpError] = React.useState(false);
   const [firebaseConfirm, setFirebaseConfirm] = React.useState(null);
+  const [inputDisabled, setInputDisabled] = React.useState(false);
 
   const handleNameInputChange = (val) => {
     if (val.length > 2) {
@@ -85,48 +88,56 @@ const SignUpScreen = ({navigation}) => {
   };
 
   const handleSendOtpButtonClick = async () => {
+    let phone_number = COUNTRY_CODE_IN + data.phoneNumber;
+    setInputDisabled(true);
     setSignUpButtonDisabled(true);
-    const confirmation = await auth().signInWithPhoneNumber(data.phoneNumber);
-    if (confirmation) {
-      setFirebaseConfirm(confirmation);
-      setSignUpButtonText('Sign Up');
-      setShowOtpBox(true);
-    } else {
-      setSignUpButtonDisabled(false);
-    }
+    await firebase
+      .auth()
+      .signInWithPhoneNumber(phone_number)
+      .then((confirmation) => {
+        setFirebaseConfirm(confirmation);
+        setSignUpButtonText('Sign Up');
+        setShowOtpBox(true);
+        setResendDisabled(true);
+        SetCounter(10);
+      })
+      .catch((err) => {
+        console.log("ERROR >>>>>>>>>> ", err);
+        setSignUpButtonDisabled(false);
+      });
   };
 
   const handleChangeDetailsClick = () => {
     setShowOtpBox(false);
     setSignUpButtonText('Send OTP');
     setSignUpButtonDisabled(false);
+    setInputDisabled(false);
   };
 
   const handleResend = async () => {
-    // Handle Resend otp action here
     otpRef.current.clear();
+    setSignUpButtonDisabled(true);
     setWrongOtpError(false);
-    const confirmation = await auth().signInWithPhoneNumber(data.phoneNumber);
     setResendDisabled(true);
-    if(confirmation) {
-    SetCounter(5);
-    setFirebaseConfirm(confirmation);
-    }
+    SetCounter(10);
+    await firebase.auth().signInWithPhoneNumber(data.phoneNumber).then((confirmation) => {
+      setFirebaseConfirm(confirmation);
+    }).catch((err) => {
+      console.log("ERROR >>>>>>>>>> ", err);
+    });
+    setResendDisabled(true);
+    SetCounter(10);
   };
 
   const handleOtpVerification = async (otp) => {
-    // Write code to verify with correct otp
-    // if (otp === '123456') {
-    //   setSignUpButtonDisabled(false);
-    //   setWrongOtpError(false);
-    //   return;
-    // }
-    try{
+    try {
       await firebaseConfirm.confirm(otp);
+      firebase.auth().currentUser.updateProfile({
+        displayName: data.fullName,
+      });
       setSignUpButtonDisabled(false);
       setWrongOtpError(false);
-    }
-    catch(err){
+    } catch (err) {
       console.log(JSON.stringify(err));
       setSignUpButtonDisabled(true);
       setWrongOtpError(true);
@@ -156,7 +167,7 @@ const SignUpScreen = ({navigation}) => {
             <TextInput
               placeholder="Enter your full name"
               style={
-                showOtpBox
+                inputDisabled
                   ? [
                       styles.textInput,
                       {
@@ -173,7 +184,7 @@ const SignUpScreen = ({navigation}) => {
               autoCapitalize="none"
               onChangeText={(val) => handleNameInputChange(val)}
               value={data.fullName}
-              editable={!showOtpBox}
+              editable={!inputDisabled}
             />
             {data.check_nameInputChange && (
               <Animatable.View animation="bounceIn">
@@ -211,7 +222,7 @@ const SignUpScreen = ({navigation}) => {
             />
             <Text
               style={
-                showOtpBox
+                inputDisabled
                   ? [
                       styles.isoCode,
                       {
@@ -232,7 +243,7 @@ const SignUpScreen = ({navigation}) => {
               keyboardType="number-pad"
               maxLength={10}
               style={
-                showOtpBox
+                inputDisabled
                   ? [
                       styles.textInput,
                       {
@@ -248,7 +259,7 @@ const SignUpScreen = ({navigation}) => {
               }
               onChangeText={(val) => handleNumberInputChange(val)}
               value={data.phoneNumber}
-              editable={!showOtpBox}
+              editable={!inputDisabled}
             />
             {data.check_numberInputChange && (
               <Animatable.View animation="bounceIn">

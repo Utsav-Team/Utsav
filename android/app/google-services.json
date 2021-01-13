@@ -1,41 +1,33 @@
 {
   "project_info": {
-    "project_number": "624589678466",
-    "project_id": "utsav-2a1af",
-    "storage_bucket": "utsav-2a1af.appspot.com"
+    "project_number": "125629524973",
+    "project_id": "utsav-b38ac",
+    "storage_bucket": "utsav-b38ac.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:624589678466:android:f0da55cd1c2df2252b519b",
+        "mobilesdk_app_id": "1:125629524973:android:2a5e6aea46ad128f0055e4",
         "android_client_info": {
           "package_name": "com.utsav"
         }
       },
       "oauth_client": [
         {
-          "client_id": "624589678466-h53voricvemjip2m2a19k32fndje258b.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.utsav",
-            "certificate_hash": "c693a1144015b96acc8f66d61f8e7325b1ebcb67"
-          }
-        },
-        {
-          "client_id": "624589678466-h3t0qpi7fn5p8v8v118bekni36h37j0i.apps.googleusercontent.com",
+          "client_id": "125629524973-decf9o1b2bot07fks198hqammmgmr4vh.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAhCn95Pf-LevpluXOKFCD-k7hdG9IypFI"
+          "current_key": "AIzaSyBlil5bN21AdD_fAlp5XaHvnzneKyNNB44"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "624589678466-h3t0qpi7fn5p8v8v118bekni36h37j0i.apps.googleusercontent.com",
+              "client_id": "125629524973-decf9o1b2bot07fks198hqammmgmr4vh.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

@@ -7,9 +7,12 @@ import LinearGradient from 'react-native-linear-gradient';
 import {Button, useTheme} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from './SignInScreenStyles';
+import firebaseSetup from '../../firebase';
+
+const COUNTRY_CODE_IN = '+91';
 
 const SignInScreen = ({navigation}) => {
-
+  const {firebase} = firebaseSetup();
   const {colors} = useTheme();
   const otpRef = React.useRef();
 
@@ -20,17 +23,19 @@ const SignInScreen = ({navigation}) => {
   });
 
   const [showOtpBox, setShowOtpBox] = React.useState(false);
-  const [counter, SetCounter] = React.useState(5);
-  const [disabled, setDisabled] = React.useState(true);
+  const [counter, SetCounter] = React.useState(10);
+  const [resendDisabled, setResendDisabled] = React.useState(true);
   const [signInButtonDisabled, setSignInButtonDisabled] = React.useState(true);
   const [signInButtonText, setSignInButtonText] = React.useState('Send OTP');
   const [wrongOtpError, setWrongOtpError] = React.useState(false);
+  const [firebaseConfirm, setFirebaseConfirm] = React.useState(null);
+  const [inputDisabled, setInputDisabled] = React.useState(false);
 
   const handleNumberInputChange = (val) => {
     if (val.trim().length == 10) {
       setData({
         ...data,
-        phoneNumber: val,
+        phoneNumber: val.trim(),
         check_numberInputChange: true,
       });
       setSignInButtonDisabled(false);
@@ -46,46 +51,66 @@ const SignInScreen = ({navigation}) => {
   };
 
   const handleSendOtpButtonClick = () => {
-    // Write code to send otp
-    setSignInButtonText('Sign In');
-    setShowOtpBox(true);
+    setInputDisabled(true);
     setSignInButtonDisabled(true);
+    let phone_number = COUNTRY_CODE_IN + data.phoneNumber;
+    firebase
+      .auth()
+      .signInWithPhoneNumber(phone_number)
+      .then((confirmation) => {
+        setFirebaseConfirm(confirmation);
+        setSignInButtonText('Sign In');
+        setShowOtpBox(true);
+        setResendDisabled(true);
+        SetCounter(10);
+      })
+      .catch((err) => {
+        console.log("ERROR >>>>>>>>>> ", err);
+        setSignInButtonDisabled(false);
+      });
   };
 
   const handleChangePhoneNumberClick = () => {
     setShowOtpBox(false);
-    setData({
-      phoneNumber: '',
-      check_numberInputChange: false,
-      showInvalidNumberError: false,
-    });
     setSignInButtonText('Send OTP');
     setSignInButtonDisabled(false);
-  }
-
-  const handleResendOtp = () => {
-    // Write code to send a new otp
-    otpRef.current.clear();
-    setWrongOtpError(false);
-    SetCounter(5);
-    setDisabled(true);
-    setSignInButtonDisabled(true);
+    setInputDisabled(false);
   };
 
-  const handleOtpVerification = (otp) => {
-    // Write code to verify with correct otp
-    if (otp === '123456') {
+  const handleResendOtp = async () => {
+    otpRef.current.clear();
+    setSignInButtonDisabled(true);
+    setWrongOtpError(false);
+    setResendDisabled(true);
+    SetCounter(10);
+    await firebase
+      .auth()
+      .signInWithPhoneNumber(data.phoneNumber)
+      .then((confirmation) => {
+        setFirebaseConfirm(confirmation);
+      })
+      .catch((err) => {
+        console.log("ERROR >>>>>>>>>> ", err);
+      });
+  };
+
+  const handleOtpVerification = async (otp) => {
+    try {
+      await firebaseConfirm.confirm(otp);
+      firebase.auth().currentUser.updateProfile({
+        displayName: data.fullName,
+      });
       setSignInButtonDisabled(false);
       setWrongOtpError(false);
-      return;
+    } catch (err) {
+      setSignInButtonDisabled(true);
+      setWrongOtpError(true);
     }
-    setSignInButtonDisabled(true);
-    setWrongOtpError(true);
   };
 
   const handleSignInButtonClick = () => {
     alert('Signed In');
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -110,21 +135,29 @@ const SignInScreen = ({navigation}) => {
           ]}>
           Phone Number
         </Text>
-        <View style={!data.check_numberInputChange && data.showInvalidNumberError ? styles.actionError : styles.action}>
+        <View
+          style={
+            !data.check_numberInputChange && data.showInvalidNumberError
+              ? styles.actionError
+              : styles.action
+          }>
           <Icon name="phone-outline" color="#05375a" size={30} />
           <Text
-            style={showOtpBox ? [
-              styles.isoCode,
-              {
-                color: '#aaaaa0'
-              },
-            ] : 
-            [
-              styles.isoCode,
-              {
-                color: colors.text,
-              },
-            ]}>
+            style={
+              inputDisabled
+                ? [
+                    styles.isoCode,
+                    {
+                      color: '#aaaaa0',
+                    },
+                  ]
+                : [
+                    styles.isoCode,
+                    {
+                      color: colors.text,
+                    },
+                  ]
+            }>
             +91
           </Text>
           <TextInput
@@ -132,21 +165,24 @@ const SignInScreen = ({navigation}) => {
             placeholderTextColor="#666666"
             keyboardType="phone-pad"
             maxLength={10}
-            style={showOtpBox ? [
-              styles.textInput,
-              {
-                color: '#aaaaa0'
-              },
-            ] : 
-            [
-              styles.textInput,
-              {
-                color: colors.text,
-              },
-            ]}
+            style={
+              inputDisabled
+                ? [
+                    styles.textInput,
+                    {
+                      color: '#aaaaa0',
+                    },
+                  ]
+                : [
+                    styles.textInput,
+                    {
+                      color: colors.text,
+                    },
+                  ]
+            }
             value={data.phoneNumber}
             onChangeText={(val) => handleNumberInputChange(val)}
-            editable={!showOtpBox}
+            editable={!inputDisabled}
           />
           {data.check_numberInputChange && (
             <Animatable.View animation="bounceIn">
@@ -182,8 +218,8 @@ const SignInScreen = ({navigation}) => {
                   ref={otpRef}
                   secureTextEntry
                   className={'border-b'}
-                  activeColor={wrongOtpError ? '#FF0000' : "rgba(0, 0, 0, 1)"}
-                  inactiveColor={wrongOtpError ? '#FF0000' : "rgba(0, 0, 0, 1)"}
+                  activeColor={wrongOtpError ? '#FF0000' : 'rgba(0, 0, 0, 1)'}
+                  inactiveColor={wrongOtpError ? '#FF0000' : 'rgba(0, 0, 0, 1)'}
                   space={10}
                   keyboardType="numeric"
                   // autoFocus={true}
@@ -200,11 +236,11 @@ const SignInScreen = ({navigation}) => {
                   flexDirection: 'row',
                   justifyContent: 'center',
                 }}>
-                {disabled ? (
+                {resendDisabled ? (
                   <CountDown
                     until={counter}
                     size={15}
-                    onFinish={() => setDisabled(() => false)}
+                    onFinish={() => setResendDisabled(() => false)}
                     separatorStyle={{color: 'black'}}
                     digitStyle={{backgroundColor: '#f6f6f6'}}
                     digitTxtStyle={{
@@ -228,8 +264,10 @@ const SignInScreen = ({navigation}) => {
                 <Text style={styles.errorMsg}>Please enter correct OTP</Text>
               </Animatable.View>
             )}
-            <TouchableOpacity onPress={handleChangePhoneNumberClick} >
-                <Text style={{color: '#009387', marginTop:15}}>Change phone number?</Text>
+            <TouchableOpacity onPress={handleChangePhoneNumberClick}>
+              <Text style={{color: '#009387', marginTop: 15}}>
+                Change phone number?
+              </Text>
             </TouchableOpacity>
           </Animatable.View>
         )}
@@ -237,7 +275,9 @@ const SignInScreen = ({navigation}) => {
         <View style={styles.button}>
           <TouchableOpacity
             style={styles.signIn}
-            onPress={showOtpBox ? handleSignInButtonClick : handleSendOtpButtonClick}
+            onPress={
+              showOtpBox ? handleSignInButtonClick : handleSendOtpButtonClick
+            }
             disabled={signInButtonDisabled}>
             <LinearGradient
               colors={
