@@ -1,0 +1,13 @@
+name: Continuous Integeration
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  install-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm install
