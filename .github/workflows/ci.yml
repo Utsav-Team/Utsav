@@ -13,7 +13,7 @@ jobs:
       - run: npm install
 
   build-android:
-    - needs: install-dependencies
+    # - needs: install-dependencies
     - runs-on: ubuntu-latest
     - steps: 
       - name: Build android release
