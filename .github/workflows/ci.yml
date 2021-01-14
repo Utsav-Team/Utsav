@@ -16,8 +16,14 @@ jobs:
       - name: Install modules
         run: npm install
 
-      - name: Build android
-        run: cd android && chmod +x ./gradlew && ./gradlew assembleRelease
+      - name: Clean previous build
+        run: cd android && chmod +x ./gradlew && ./gradlew clean
+
+      - name: Build dev apk
+        run: ./gradlew assembleDebug
+
+      - name: Build release apk
+        run: ./gradlew assembleRelease
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
