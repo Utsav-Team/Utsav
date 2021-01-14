@@ -30,6 +30,11 @@ jobs:
         with:
           name: app-release.apk
           path: android/app/build/outputs/apk/release/
+
+      - name: Archive build
+        uses: thedoctor0/zip-release@master
+        with:
+          filename: 'app-release.zip'
   # build-android:
   #   - needs: install-and-test
   #   - runs-on: ubuntu-latest
