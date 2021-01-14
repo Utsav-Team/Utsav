@@ -37,10 +37,10 @@ jobs:
           filename: 'app-release.zip'
 
       - name: Upload Artifact zip
-              uses: actions/upload-artifact@v1
-              with:
-                name: app-release.zip
-                path: android/app/build/outputs/apk/release/
+        uses: actions/upload-artifact@v1
+        with:
+          name: app-release.zip
+          path: android/app/build/outputs/apk/release/
 
 
 
