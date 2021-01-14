@@ -35,6 +35,16 @@ jobs:
         uses: thedoctor0/zip-release@master
         with:
           filename: 'app-release.zip'
+
+      - name: Upload Artifact zip
+              uses: actions/upload-artifact@v1
+              with:
+                name: app-release.zip
+                path: android/app/build/outputs/apk/release/
+
+
+
+
   # build-android:
   #   - needs: install-and-test
   #   - runs-on: ubuntu-latest
