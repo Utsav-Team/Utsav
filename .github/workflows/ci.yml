@@ -28,8 +28,8 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with: 
-          name: test.apk
-          path: out/
+          name: app-release.apk
+          path: /android/app/build/outputs/apk/release
 
   # build-android:
   #   - needs: install-and-test
