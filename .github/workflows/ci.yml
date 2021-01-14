@@ -26,15 +26,10 @@ jobs:
         run: cd android && chmod +x ./gradlew && ./gradlew assembleRelease
 
       - name: Upload Artifact
-        steps:
-        - uses: actions/checkout@v2
-        - run: mkdir -p android/app/test
-        - run: echo hello > android/app/test
-        - uses: actions/upload-artifact@v2
-          with: 
-            name: app-release.apk
-            path: android/app/build/outputs/apk/release/
-
+        uses: actions/upload-artifact@v2
+        with: 
+          name: test.apk
+          path: out/
 
   # build-android:
   #   - needs: install-and-test
