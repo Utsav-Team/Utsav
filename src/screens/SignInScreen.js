@@ -281,7 +281,8 @@ const SignInScreen = ({navigation}) => {
             disabled={signInButtonDisabled}>
             <LinearGradient
               colors={
-                signInButtonDisabled ? ['#aaa', '#bbb'] : ['#08d4c4', '#01ab9d']
+                // signInButtonDisabled ? ['#aaa', '#bbb'] : ['#08d4c4', '#01ab9d']
+                signInButtonDisabled ? ['#aaa', '#bbb'] : ['#DB26AD', '#141067']
               }
               style={styles.signIn}>
               <Text
@@ -301,7 +302,7 @@ const SignInScreen = ({navigation}) => {
             style={[
               styles.signIn,
               {
-                borderColor: '#009387',
+                borderColor: '#DB26AD',
                 borderWidth: 2,
                 marginTop: 15,
               },
