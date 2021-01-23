@@ -2,6 +2,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
 import AuthenticationScreen from './src/screens/AuthenticationScreen';
+import { MainTabNavigator } from './src/screens/MainTabNavigator';
 import OnboardigScreen from './src/screens/OnboardigScreen';
 import SignInScreen from './src/screens/SignInScreen';
 import SignUpScreen from './src/screens/SignUpScreen';
@@ -11,21 +12,22 @@ const App = () => {
   const Stack = createStackNavigator();
   return (
     // <NavigationContainer>
-    //   <Stack.Navigator initialRouteName="SplashScreen" screenOptions={{headerShown: false}}>
-    //     <Stack.Screen name="SplashScreen" component={SplashScreen} />
-    //     <Stack.Screen name="SignInScreen" component={SignInScreen} />
-    //     <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
+    //   <Stack.Navigator
+    //     initialRouteName="OnboardigScreen"
+    //     screenOptions={{headerShown: false}}>
+    //     <Stack.Screen name="OnboardigScreen" component={OnboardigScreen} />
+    //     <Stack.Screen
+    //       name="AuthenticationScreen"
+    //       component={AuthenticationScreen}
+    //     />
     //   </Stack.Navigator>
     // </NavigationContainer>
+
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="OnboardigScreen"
+        initialRouteName="MainTabNavigator"
         screenOptions={{headerShown: false}}>
-        <Stack.Screen name="OnboardigScreen" component={OnboardigScreen} />
-        <Stack.Screen
-          name="AuthenticationScreen"
-          component={AuthenticationScreen}
-        />
+        <Stack.Screen name="MainTabNavigator" component={MainTabNavigator} />
       </Stack.Navigator>
     </NavigationContainer>
   );
