@@ -1,6 +1,7 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
+import { Text } from 'react-native';
 import AuthenticationScreen from './src/screens/AuthenticationScreen';
 import { MainTabNavigator } from './src/screens/MainTabNavigator';
 import OnboardigScreen from './src/screens/OnboardigScreen';
