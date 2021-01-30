@@ -26,7 +26,7 @@ export const MainTabNavigator = () => {
       />
       <Tab.Screen
         name="Details"
-        component={ProfileStackScreen}
+        component={HomeScreen}
         options={{
           tabBarLabel: 'Favourites',
           tabBarIcon: ({color}) => (
@@ -36,7 +36,7 @@ export const MainTabNavigator = () => {
       />
       <Tab.Screen
         name="Profile"
-        component={EditProfileScreen}
+        component={HomeScreen}
         options={{
           tabBarLabel: 'Cart',
           tabBarIcon: ({color}) => (
@@ -46,7 +46,7 @@ export const MainTabNavigator = () => {
       />
       <Tab.Screen
         name="Explore"
-        component={ProfileScreen}
+        component={ProfileStackScreen}
         options={{
           tabBarLabel: 'Profile',
           tabBarIcon: ({color}) => (
