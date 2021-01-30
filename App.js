@@ -5,9 +5,6 @@ import { Text } from 'react-native';
 import AuthenticationScreen from './src/screens/AuthenticationScreen';
 import { MainTabNavigator } from './src/screens/MainTabNavigator';
 import OnboardigScreen from './src/screens/OnboardigScreen';
-import SignInScreen from './src/screens/SignInScreen';
-import SignUpScreen from './src/screens/SignUpScreen';
-import SplashScreen from './src/screens/SpashScreen';
 
 const App = () => {
   const Stack = createStackNavigator();
@@ -23,7 +20,6 @@ const App = () => {
     //     />
     //   </Stack.Navigator>
     // </NavigationContainer>
-
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="MainTabNavigator"

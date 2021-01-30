@@ -1,10 +1,15 @@
 import React from 'react'
-import { View, Text } from 'react-native'
+import {View, Text} from 'react-native'
+import Carousel from '../../components/Carousal'
+import { dummyData } from '../../data/Data'
 
-export default function HomeScreen() {
+
+const HomeScreen = ({navigation}) =>{
     return (
         <View>
-            <Text>Home Screen</Text>
+            <Carousel data = {dummyData}/>
         </View>
     )
 }
+
+export default HomeScreen
