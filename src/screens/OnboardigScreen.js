@@ -5,8 +5,8 @@ import Onboarding from 'react-native-onboarding-swiper';
 export default function OnboardigScreen({navigation}) {
   return (
     <Onboarding
-      onSkip={() => navigation.navigate('AuthenticationScreen')}
-      onDone={() => navigation.navigate('AuthenticationScreen')}
+      onSkip={() => navigation.replace('SignUpScreen')}
+      onDone={() => navigation.replace('SignUpScreen')}
       titleStyles={{fontFamily: 'Open Sans', fontStyle: 'normal' ,fontWeight: '700', fontSize: 22, lineHeight: 25, textAlign: 'center', color: '#000'}}
       subTitleStyles={{fontFamily: 'Open Sans', fontStyle: 'normal' ,fontWeight: 'normal', fontSize: 16, lineHeight: 20, textAlign: 'center', color: '#6B6B6B'}}
       pages={[
