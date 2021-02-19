@@ -2,7 +2,7 @@ import React from 'react';
 import {Image} from 'react-native';
 import Onboarding from 'react-native-onboarding-swiper';
 
-export default function OnboardigScreen({navigation}) {
+export default function OnboardingScreen({navigation}) {
   return (
     <Onboarding
       onSkip={() => navigation.replace('SignUpScreen')}

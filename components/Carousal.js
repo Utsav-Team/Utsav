@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Animated, Dimensions, FlatList, StyleSheet, View} from 'react-native';
 import CarouselItem from './CarousalItem';
 
-const {width, heigth} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 let flatList;
 
 function infiniteScroll(dataList) {

@@ -65,7 +65,7 @@ const SignInScreen = ({navigation}) => {
         SetCounter(10);
       })
       .catch((err) => {
-        console.log("ERROR >>>>>>>>>> ", err);
+        console.log("Error while sending OTP >>> ", err);
         setSignInButtonDisabled(false);
       });
   };
@@ -90,7 +90,7 @@ const SignInScreen = ({navigation}) => {
         setFirebaseConfirm(confirmation);
       })
       .catch((err) => {
-        console.log("ERROR >>>>>>>>>> ", err);
+        console.log("Error while resending OTP >>> ", err);
       });
   };
 
@@ -108,13 +108,13 @@ const SignInScreen = ({navigation}) => {
     }
   };
 
-  const handleSignInButtonClick = () => {
-    alert('Signed In');
+  const handleSignInButtonClick = (navigationObj) => {
+    navigationObj.navigate('MainTabNavigator');
   };
 
   return (
-    <View style={styles.container}>
-      <StatusBar backgroundColor="#009387" barStyle="light-content" />
+    <LinearGradient colors={['#141067','#DB26AD']} start={{x: 0, y: 0}} end={{x: 0, y: 0.2}} style={styles.container}>
+      <StatusBar backgroundColor="#141067" barStyle="light-content" />
       <View style={styles.header}>
         <Text style={styles.text_header}>Sign In</Text>
       </View>
@@ -265,7 +265,7 @@ const SignInScreen = ({navigation}) => {
               </Animatable.View>
             )}
             <TouchableOpacity onPress={handleChangePhoneNumberClick}>
-              <Text style={{color: '#009387', marginTop: 15}}>
+              <Text style={{color: '#141067', marginTop: 15}}>
                 Change phone number?
               </Text>
             </TouchableOpacity>
@@ -276,12 +276,11 @@ const SignInScreen = ({navigation}) => {
           <TouchableOpacity
             style={styles.signIn}
             onPress={
-              showOtpBox ? handleSignInButtonClick : handleSendOtpButtonClick
+              showOtpBox ? () => handleSignInButtonClick(navigation) : () => handleSendOtpButtonClick()
             }
             disabled={signInButtonDisabled}>
             <LinearGradient
               colors={
-                // signInButtonDisabled ? ['#aaa', '#bbb'] : ['#08d4c4', '#01ab9d']
                 signInButtonDisabled ? ['#aaa', '#bbb'] : ['#DB26AD', '#141067']
               }
               style={styles.signIn}>
@@ -303,6 +302,7 @@ const SignInScreen = ({navigation}) => {
               styles.signIn,
               {
                 borderColor: '#DB26AD',
+                // borderColor: '#141067',
                 borderWidth: 2,
                 marginTop: 15,
               },
@@ -311,7 +311,7 @@ const SignInScreen = ({navigation}) => {
               style={[
                 styles.textSign,
                 {
-                  color: '#009387',
+                  color: '#141067',
                 },
               ]}>
               Sign Up
@@ -319,7 +319,7 @@ const SignInScreen = ({navigation}) => {
           </TouchableOpacity>
         </View>
       </Animatable.View>
-    </View>
+    </LinearGradient>
   );
 };
 

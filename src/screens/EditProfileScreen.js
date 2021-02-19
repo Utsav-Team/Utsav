@@ -31,10 +31,9 @@ const EditProfileScreen = () => {
       cropping: true,
       compressImageQuality: 0.7
     }).then(pic => {
-      console.log(pic);
       setImage(pic.path);
       bs.current.snapTo(1);
-    }).catch(err => {console.log(err)});
+    }).catch(err => {console.log("Error while taking photo from camera >>> ", err)});
   }
 
   const choosePhotoFromLibrary = () => {
@@ -47,7 +46,7 @@ const EditProfileScreen = () => {
       console.log(pic);
       setImage(pic.path);
       bs.current.snapTo(1);
-    }).catch(err => {console.log(err)});
+    }).catch(err => {console.log("Error while choosing photo from library >>> ", err)});
   }
 
   const renderInner = () => (

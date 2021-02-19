@@ -6,14 +6,13 @@ import AuthStack from './src/screens/AuthStack';
 import { MainTabNavigator } from './src/screens/MainTabNavigator';
 
 const App = () => {
-  const isAuthenticated = false;
-  const isLoaded = true;
   const Stack = createStackNavigator();
   return (
     <NavigationContainer>
       <Stack.Navigator
+        screenOptions={{headerShown: false}}
         initialRouteName="AppLoading"
-        screenOptions={{headerShown: false}}>
+        >
         <Stack.Screen name="AppLoading" component={AppLoadingScreen} />
         <Stack.Screen name="AuthScreen" component={AuthStack} />
         <Stack.Screen name="MainTabNavigator" component={MainTabNavigator} />

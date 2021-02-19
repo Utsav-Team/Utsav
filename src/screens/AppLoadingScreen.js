@@ -1,25 +1,31 @@
-import React from 'react'
-import { View, Text } from 'react-native'
+import React from 'react';
+import {View, Text} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const isFirstTimeLoadedVal = async (navigation) => {
-    try {
-      const isFirstTimeLoaded = JSON.parse(await AsyncStorage.getItem('isFirstTimeLoaded'));
+const isFirstTimeAlreadyLoaded = async (navigation) => {
+  AsyncStorage.getItem('isFirstTimeLoaded')
+    .then((val) => {
+      const isFirstTimeLoaded = JSON.parse(val);
       if (isFirstTimeLoaded === null) {
-        await AsyncStorage.setItem('isFirstTimeLoaded', JSON.stringify(true));
+        AsyncStorage.setItem('isFirstTimeLoaded', JSON.stringify(true));
         navigation.navigate('AuthScreen', {isFirstTimeLoaded: false});
+      } else {
+        navigation.navigate('AuthScreen', {isFirstTimeLoaded: true});
       }
-      navigation.navigate('AuthScreen', {isFirstTimeLoaded: true});
-    } catch (err) {
-      console.log('ERROR >>> ', err);
-    }
-  };
+    })
+    .catch((err) => {
+      console.log(
+        'Error while loading isFirstTimeLoaded from Async Storage >>> ',
+        err,
+      );
+    });
+};
 
 export default function AppLoadingScreen({navigation}) {
-    isFirstTimeLoadedVal(navigation);
-    return (
-        <View>
-            <Text>App Loading Screen</Text>
-        </View>
-    )
+  isFirstTimeAlreadyLoaded(navigation);
+  return (
+    <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+      <Text>App Loading Screen</Text>
+    </View>
+  );
 }

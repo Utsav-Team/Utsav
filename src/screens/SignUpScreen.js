@@ -102,7 +102,7 @@ const SignUpScreen = ({navigation}) => {
         SetCounter(10);
       })
       .catch((err) => {
-        console.log("ERROR >>>>>>>>>> ", err);
+        console.log("Error while sending OTP >>> ", err);
         setSignUpButtonDisabled(false);
       });
   };
@@ -123,7 +123,7 @@ const SignUpScreen = ({navigation}) => {
     await firebase.auth().signInWithPhoneNumber(data.phoneNumber).then((confirmation) => {
       setFirebaseConfirm(confirmation);
     }).catch((err) => {
-      console.log("ERROR >>>>>>>>>> ", err);
+      console.log("Error while resending OTP >>> ", err);
     });
     setResendDisabled(true);
     SetCounter(10);
@@ -138,7 +138,7 @@ const SignUpScreen = ({navigation}) => {
       setSignUpButtonDisabled(false);
       setWrongOtpError(false);
     } catch (err) {
-      console.log(JSON.stringify(err));
+      console.log("Error while verifying OTP >>> ", JSON.stringify(err));
       setSignUpButtonDisabled(true);
       setWrongOtpError(true);
     }
@@ -149,8 +149,8 @@ const SignUpScreen = ({navigation}) => {
   };
 
   return (
-    <View style={styles.container}>
-      <StatusBar backgroundColor="#009387" barStyle="light-content" />
+    <LinearGradient colors={['#141067','#DB26AD']} start={{x: 0, y: 0}} end={{x: 0, y: 0.2}} style={styles.container}>
+      <StatusBar backgroundColor="#141067" barStyle="light-content" />
       <View style={styles.header}>
         <Text style={styles.text_header}>Register Now!</Text>
       </View>
@@ -352,7 +352,7 @@ const SignUpScreen = ({navigation}) => {
                 </Animatable.View>
               )}
               <TouchableOpacity onPress={handleChangeDetailsClick}>
-                <Text style={{color: '#009387', marginTop: 15}}>
+                <Text style={{color: '#141067', marginTop: 15}}>
                   Change details?
                 </Text>
               </TouchableOpacity>
@@ -384,7 +384,7 @@ const SignUpScreen = ({navigation}) => {
                 colors={
                   signUpButtonDisabled
                     ? ['#aaa', '#bbb']
-                    : ['#08d4c4', '#01ab9d']
+                    : ['#DB26AD', '#141067']
                 }
                 style={styles.signIn}>
                 <Text
@@ -404,7 +404,7 @@ const SignUpScreen = ({navigation}) => {
               style={[
                 styles.signIn,
                 {
-                  borderColor: '#009387',
+                  borderColor: '#DB26AD',
                   borderWidth: 2,
                   marginTop: 15,
                 },
@@ -413,7 +413,7 @@ const SignUpScreen = ({navigation}) => {
                 style={[
                   styles.textSign,
                   {
-                    color: '#009387',
+                    color: '#141067',
                   },
                 ]}>
                 Sign In
@@ -422,7 +422,7 @@ const SignUpScreen = ({navigation}) => {
           </View>
         </ScrollView>
       </Animatable.View>
-    </View>
+    </LinearGradient>
   );
 };
 
