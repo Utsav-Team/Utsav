@@ -1,12 +1,11 @@
 import React from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Grid from 'react-native-grid-component';
-import servicesData from '../../data/Services';
 import * as Animatable from 'react-native-animatable';
 
-export default function HomeServicesScreen() {
+export default function ServicesGrid({serviceListData}) {
   let _renderItem = (data, i) => (
-    <TouchableOpacity style={styles.item} key={i} disabled={!data.active}>
+    <TouchableOpacity style={styles.item} key={i} disabled={!data.active} onPress={console.log('Clicked')}>
       <Text style={styles.imageHeader}>{data.header}</Text>
       <Image style={styles.image} source={data.image} blurRadius={data.active? 0 : 2} />
       { !data.active && <Animatable.View animation="pulse" iterationCount="infinite" style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'}}>
@@ -22,7 +21,7 @@ export default function HomeServicesScreen() {
         style={styles.list}
         renderItem={_renderItem}
         // renderPlaceholder={_renderItem}
-        data={servicesData}
+        data={serviceListData}
         numColumns={2}
         keyExtractors={(item, index) => 'Hello' + index}
       />

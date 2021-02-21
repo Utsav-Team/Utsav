@@ -60,7 +60,6 @@ export const MainTabNavigator = () => {
 
 const ProfileStack = createStackNavigator();
 const ProfileStackScreen = ({navigation}) => {
-  // const {colors} = useTheme();
 
   return (
     <ProfileStack.Navigator
@@ -70,24 +69,12 @@ const ProfileStackScreen = ({navigation}) => {
           shadowColor: 'transparent', // iOS
           elevation: 0, // Android
         },
-        // headerTintColor: 'red',
       }}>
       <ProfileStack.Screen
         name="Profile"
         component={ProfileScreen}
         options={{
           title: 'Profile',
-          // headerLeft: () => (
-          //   <View style={{marginLeft: 10}}>
-          //     <Icon.Button
-          //       name="ios-menu"
-          //       size={25}
-          //       backgroundColor={colors.background}
-          //       color={colors.text}
-          //       onPress={() => navigation.openDrawer()}
-          //     />
-          //   </View>
-          // ),
           headerRight: () => (
             <View style={{marginRight: 10}}>
               <MaterialCommunityIcons.Button

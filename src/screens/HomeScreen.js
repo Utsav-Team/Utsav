@@ -3,14 +3,15 @@ import {View, Text} from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import Carousel from '../../components/Carousal'
 import { dummyData } from '../../data/Data'
-import HomeServicesScreen from './HomeServicesScreen'
+import ServicesGrid from './ServicesGrid'
+import serviceListData from '../../data/Services'
 
 
 const HomeScreen = ({navigation}) =>{
     return (
         <ScrollView>
             <Carousel data = {dummyData}/>
-            <HomeServicesScreen />
+            <ServicesGrid serviceListData={serviceListData}/>
         </ScrollView>
     )
 }
