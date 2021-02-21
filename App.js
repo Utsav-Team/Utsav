@@ -11,7 +11,7 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{headerShown: false}}
-        initialRouteName="AppLoading"
+        initialRouteName="MainTabNavigator"
         >
         <Stack.Screen name="AppLoading" component={AppLoadingScreen} />
         <Stack.Screen name="AuthScreen" component={AuthStack} />

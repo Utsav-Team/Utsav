@@ -19,5 +19,5 @@ if (!firebase.auth.length) {
 }
 
 export default () => {
-  return {firebase, auth, firebaseConfig, firestore};
+  return {firebase, auth, firebaseConfig};
 };

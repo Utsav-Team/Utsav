@@ -102,7 +102,7 @@ const SignUpScreen = ({navigation}) => {
         SetCounter(10);
       })
       .catch((err) => {
-        console.log("Error while sending OTP >>> ", err);
+        console.log('Error while sending OTP >>> ', err);
         setSignUpButtonDisabled(false);
       });
   };
@@ -120,11 +120,15 @@ const SignUpScreen = ({navigation}) => {
     setWrongOtpError(false);
     setResendDisabled(true);
     SetCounter(10);
-    await firebase.auth().signInWithPhoneNumber(data.phoneNumber).then((confirmation) => {
-      setFirebaseConfirm(confirmation);
-    }).catch((err) => {
-      console.log("Error while resending OTP >>> ", err);
-    });
+    await firebase
+      .auth()
+      .signInWithPhoneNumber(data.phoneNumber)
+      .then((confirmation) => {
+        setFirebaseConfirm(confirmation);
+      })
+      .catch((err) => {
+        console.log('Error while resending OTP >>> ', err);
+      });
     setResendDisabled(true);
     SetCounter(10);
   };
@@ -138,7 +142,7 @@ const SignUpScreen = ({navigation}) => {
       setSignUpButtonDisabled(false);
       setWrongOtpError(false);
     } catch (err) {
-      console.log("Error while verifying OTP >>> ", JSON.stringify(err));
+      console.log('Error while verifying OTP >>> ', JSON.stringify(err));
       setSignUpButtonDisabled(true);
       setWrongOtpError(true);
     }
@@ -146,10 +150,27 @@ const SignUpScreen = ({navigation}) => {
 
   const handleSignInButtonClick = () => {
     alert('Signed Up');
+    firebase.firestore().collection('users').add({
+      fullName: data.fullName,
+      phoneNumber: data.phoneNumber,
+    });
+    let val = firebase
+      .firestore()
+      .collection('users')
+      .where('phoneNumber', '==', '1234567891')
+      .get()
+      .then((value) => {
+        console.log(value);
+      });
+    console.log(val);
   };
 
   return (
-    <LinearGradient colors={['#141067','#DB26AD']} start={{x: 0, y: 0}} end={{x: 0, y: 0.2}} style={styles.container}>
+    <LinearGradient
+      colors={['#141067', '#DB26AD']}
+      start={{x: 0, y: 0}}
+      end={{x: 0, y: 0.2}}
+      style={styles.container}>
       <StatusBar backgroundColor="#141067" barStyle="light-content" />
       <View style={styles.header}>
         <Text style={styles.text_header}>Register Now!</Text>
