@@ -1,27 +1,33 @@
 const ServiceData = [
     {
-        serviceHeader: 'Pooja Samagri',
-        serviceImage: '../assets/pooja_samagri.png',
+        header: 'Pooja Samagri',
+        image: require('../src/assets/pooja_samagri.png'),
+        active: true,
     },
     {
-        serviceHeader: 'Dieties Statues',
-        serviceImage: '../assets/pooja_samagri.png',
+        header: 'Dieties Statues',
+        image: require('../src/assets/Statues.png'),
+        active: true,
     },
     {
-        serviceHeader: 'Tents',
-        serviceImage: '../assets/pooja_samagri.png',
+        header: 'Tents',
+        image: require('../src/assets/tent.png'),
+        active: true,
     },
     {
-        serviceHeader: 'Venues',
-        serviceImage: '../assets/pooja_samagri.png',
+        header: 'Venues',
+        image: require('../src/assets/venue.png'),
+        active: false,
     },
     {
-        serviceHeader: 'Priest',
-        serviceImage: '../assets/pooja_samagri.png',
+        header: 'Priest',
+        image: require('../src/assets/priest.png'),
+        active: false,
     },
     {
-        serviceHeader: 'Tables and Chairs',
-        serviceImage: '../assets/pooja_samagri.png',
+        header: 'Tables and Chairs',
+        image: require('../src/assets/TableChair.png'),
+        active: false,
     },
 ]
 

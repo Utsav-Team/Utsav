@@ -1,22 +1,18 @@
 import React from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Grid from 'react-native-grid-component';
-import servicesData from '../../data/Services'
+import servicesData from '../../data/Services';
+import * as Animatable from 'react-native-animatable';
 
 export default function HomeServicesScreen() {
   let _renderItem = (data, i) => (
-    <TouchableOpacity style={[{backgroundColor: '#eee'}, styles.item]} key={i}>
-      <Text style={styles.imageHeader}>{data.serviceHeader}</Text>
-      {/* <View style={styles.imageContainer}>
-        <Image
-          style={styles.image}
-          source={require('../assets/onboarding-img2.png')}
-        />
-      </View> */}
-      <Image
-          style={styles.image}
-          source={require('../assets/pooja_samagri.png')}
-        />
+    <TouchableOpacity style={styles.item} key={i} disabled={!data.active}>
+      <Text style={styles.imageHeader}>{data.header}</Text>
+      <Image style={styles.image} source={data.image} blurRadius={data.active? 0 : 2} />
+      { !data.active && <Animatable.View animation="pulse" iterationCount="infinite" style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'}}>
+        <Text style={{fontSize: 20}}>Coming Soon</Text>
+      </Animatable.View>
+      }
     </TouchableOpacity>
   );
 
@@ -50,6 +46,7 @@ const styles = StyleSheet.create({
     shadowColor: 'black',
     shadowOpacity: 0.9,
     elevation: 10,
+    backgroundColor: 'white',
   },
   list: {
     flex: 1,
