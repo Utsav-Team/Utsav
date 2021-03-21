@@ -7,10 +7,10 @@ const isFirstTimeAlreadyLoaded = async (navigation) => {
     .then((val) => {
       const isFirstTimeLoaded = JSON.parse(val);
       if (isFirstTimeLoaded === null) {
-        AsyncStorage.setItem('isFirstTimeLoaded', JSON.stringify(true));
-        navigation.navigate('AuthScreen', {isFirstTimeLoaded: false});
-      } else {
+        AsyncStorage.setItem('isFirstTimeLoaded', JSON.stringify(false));
         navigation.navigate('AuthScreen', {isFirstTimeLoaded: true});
+      } else {
+        navigation.navigate('AuthScreen', {isFirstTimeLoaded: false});
       }
     })
     .catch((err) => {

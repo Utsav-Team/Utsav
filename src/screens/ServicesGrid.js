@@ -3,9 +3,9 @@ import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Grid from 'react-native-grid-component';
 import * as Animatable from 'react-native-animatable';
 
-export default function ServicesGrid({serviceListData}) {
+export default function ServicesGrid({serviceListData, navigation}) {
   let _renderItem = (data, i) => (
-    <TouchableOpacity style={styles.item} key={i} disabled={!data.active} onPress={console.log('Clicked')}>
+    <TouchableOpacity style={styles.item} key={i} disabled={!data.active} onPress={() => navigation.navigate(data.header)}>
       <Text style={styles.imageHeader}>{data.header}</Text>
       <Image style={styles.image} source={data.image} blurRadius={data.active? 0 : 2} />
       { !data.active && <Animatable.View animation="pulse" iterationCount="infinite" style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'}}>

@@ -1,12 +1,14 @@
 import React from 'react';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import HomeScreen from './HomeScreen';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ProfileScreen from './ProfileScreen';
 import EditProfileScreen from './EditProfileScreen';
 import {createStackNavigator} from '@react-navigation/stack';
 import { View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import HomeStackScreen from './HomeStackScreen';
+import OrdersScreen from './OrdersScreen';
+import CartScreen from './CartScreen';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -18,29 +20,29 @@ export const MainTabNavigator = () => {
       barStyle={{backgroundColor: '#841C8E'}}>
       <Tab.Screen
         name="Home"
-        component={HomeScreen}
+        component={HomeStackScreen}
         options={{
           tabBarLabel: 'Home',
-          tabBarIcon: ({color}) => <Icon name="home" color={color} size={26} />,
+          tabBarIcon: ({color}) => <MaterialCommunityIcons name="home" color={color} size={26} />,
         }}
       />
       <Tab.Screen
         name="Details"
-        component={HomeScreen}
+        component={OrdersScreen}
         options={{
-          tabBarLabel: 'Favourites',
+          tabBarLabel: 'Orders',
           tabBarIcon: ({color}) => (
-            <Icon name="heart-outline" color={color} size={26} />
+            <MaterialCommunityIcons name="receipt" color={color} size={26} />
           ),
         }}
       />
       <Tab.Screen
         name="Profile"
-        component={HomeScreen}
+        component={CartScreen}
         options={{
           tabBarLabel: 'Cart',
           tabBarIcon: ({color}) => (
-            <Icon name="cart-outline" color={color} size={26} />
+            <MaterialCommunityIcons name="cart-outline" color={color} size={26} />
           ),
         }}
       />
@@ -50,7 +52,7 @@ export const MainTabNavigator = () => {
         options={{
           tabBarLabel: 'Profile',
           tabBarIcon: ({color}) => (
-            <Icon name="face-outline" color={color} size={26} />
+            <MaterialCommunityIcons name="face-outline" color={color} size={26} />
           ),
         }}
       />

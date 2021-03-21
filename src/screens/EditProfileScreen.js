@@ -43,7 +43,6 @@ const EditProfileScreen = () => {
       cropping: true,
       compressImageQuality: 0.7
     }).then(pic => {
-      console.log(pic);
       setImage(pic.path);
       bs.current.snapTo(1);
     }).catch(err => {console.log("Error while choosing photo from library >>> ", err)});
@@ -84,13 +83,14 @@ const EditProfileScreen = () => {
     <ScrollView style={styles.container}>
       <BottomSheet
         ref={bs}
-        snapPoints={[330, 0]}
+        snapPoints={[450, 0]}
         renderContent={renderInner}
         renderHeader={renderHeader}
         initialSnap={1}
         callbackNode={fall}
         enabledGestureInteraction={true}
         enabledBottomClamp={true}
+
       />
       <Animated.View style={{margin: 20,
         opacity: Animated.add(0.1, Animated.multiply(fall, 1.0)),

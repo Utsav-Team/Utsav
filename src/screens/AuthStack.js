@@ -7,11 +7,11 @@ import SignUpScreen from './SignUpScreen';
 
 function AuthStack({route}) {
   const Stack = createStackNavigator();
-  const isFirstTimeLoaded = route.params.isFirstTimeLoaded;
+  const isFirstTimeLoaded = route.params.isFirstTimeLoaded ?? true;
   return (
     <Stack.Navigator
       screenOptions={{headerShown: false}}>
-      {!isFirstTimeLoaded && (
+      {isFirstTimeLoaded && (
         <Stack.Screen name="OnboardingScreen" component={OnboardingScreen} />
       )}
       <Stack.Screen name="SignInScreen" component={SignInScreen} />

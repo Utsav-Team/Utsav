@@ -157,7 +157,7 @@ const SignUpScreen = ({navigation}) => {
     let val = firebase
       .firestore()
       .collection('users')
-      .where('phoneNumber', '==', '1234567891')
+      .where('phoneNumber', '==', data.phoneNumber)
       .get()
       .then((value) => {
         console.log(value);

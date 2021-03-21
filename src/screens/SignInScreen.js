@@ -97,9 +97,6 @@ const SignInScreen = ({navigation}) => {
   const handleOtpVerification = async (otp) => {
     try {
       await firebaseConfirm.confirm(otp);
-      firebase.auth().currentUser.updateProfile({
-        displayName: data.fullName,
-      });
       setSignInButtonDisabled(false);
       setWrongOtpError(false);
     } catch (err) {
@@ -109,7 +106,18 @@ const SignInScreen = ({navigation}) => {
   };
 
   const handleSignInButtonClick = (navigationObj) => {
-    navigationObj.navigate('MainTabNavigator');
+    firebase
+      .firestore()
+      .collection('users')
+      .where('phoneNumber', '==', data.phoneNumber)
+      .get()
+      .then((value) => {
+        if(value.empty){
+          alert('Please sign up first.');
+          return;
+        }
+        navigationObj.navigate('MainTabNavigator');
+      });
   };
 
   return (
