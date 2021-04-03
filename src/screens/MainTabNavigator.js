@@ -37,7 +37,7 @@ export const MainTabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Profile"
+        name="Cart"
         component={CartScreen}
         options={{
           tabBarLabel: 'Cart',
@@ -47,7 +47,7 @@ export const MainTabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Explore"
+        name="Profile"
         component={ProfileStackScreen}
         options={{
           tabBarLabel: 'Profile',

@@ -1,29 +1,52 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Animated, Dimensions, FlatList, StyleSheet, View} from 'react-native';
 import CarouselItem from './CarousalItem';
 
-const {width} = Dimensions.get('window');
-let flatList;
+// const {width} = Dimensions.get('window');
+// let flatList;
 
-function infiniteScroll(dataList) {
-  const numberOfData = dataList.length;
-  let scrollValue = 0,
-    scrolled = 0;
+// function infiniteScroll(dataList) {
+//   const numberOfData = dataList.length;
+//   let scrollValue = 0,
+//     scrolled = 0;
 
-  setInterval(function () {
-    scrolled++;
-    if (scrolled < numberOfData) {
-      scrollValue = scrollValue + width;
-    } else {
-      scrollValue = 0;
-      scrolled = 0;
-    }
+//   setInterval(function () {
+//     scrolled++;
+//     if (scrolled < numberOfData) {
+//       scrollValue = scrollValue + width;
+//     } else {
+//       scrollValue = 0;
+//       scrolled = 0;
+//     }
 
-    this.flatList.scrollToOffset({animated: true, offset: scrollValue});
-  }, 3000);
-}
+//     this.flatList.scrollToOffset({animated: true, offset: scrollValue});
+//   }, 3000);
+// }
 
 const Carousel = ({data}) => {
+  const {width} = Dimensions.get('window');
+  let flatList = useRef();
+
+  const infiniteScroll = (dataList) => {
+    const numberOfData = dataList.length;
+    let scrollValue = 0,
+      scrolled = 0;
+
+    setInterval(() => {
+      scrolled++;
+      if (scrolled < numberOfData) {
+        scrollValue = scrollValue + width;
+      } else {
+        scrollValue = 0;
+        scrolled = 0;
+      }
+
+      if (flatList.current != null) {
+        flatList.current.scrollToOffset({animated: true, offset: scrollValue});
+      }
+    }, 3000);
+  };
+
   const scrollX = new Animated.Value(0);
   let position = Animated.divide(scrollX, width);
   const [dataList, setDataList] = useState(data);
@@ -38,9 +61,10 @@ const Carousel = ({data}) => {
       <View>
         <FlatList
           data={data}
-          ref={(flatList) => {
-            this.flatList = flatList;
-          }}
+          // ref={(flatList) => {
+          //   flatList = flatList;
+          // }}
+          ref={flatList}
           keyExtractor={(item, index) => 'key' + index}
           horizontal
           pagingEnabled

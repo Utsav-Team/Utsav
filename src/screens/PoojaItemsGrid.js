@@ -2,8 +2,12 @@ import React from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Grid from 'react-native-grid-component';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToCart } from '../redux/CartActions';
 
 export default function PoojaItemsGrid({poojaItems, navigation}) {
+  const cartItems = useSelector(state => state.cart);
+  const dispatch = useDispatch()
   let _renderItem = (data, i) => (
     <View style={styles.item} key={i}>
       <Text style={styles.imageHeader}>{data.name}</Text>
@@ -11,7 +15,7 @@ export default function PoojaItemsGrid({poojaItems, navigation}) {
       {data.quantity > 0 ? (
         <View style={styles.priceBox}>
           <Text style={styles.price}>${data.price}</Text>
-          <TouchableOpacity style={styles.addToCart}>
+          <TouchableOpacity style={styles.addToCart} onPress={() => dispatch(addToCart(data.id))} >
             <Text>Add To Cart</Text>
           </TouchableOpacity>
         </View>

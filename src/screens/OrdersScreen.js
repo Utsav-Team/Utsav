@@ -1,29 +1,21 @@
 import React from 'react';
 import {View, Text, FlatList, StyleSheet} from 'react-native';
-import Orders from '../../data/Orders';
 import moment from 'moment';
+import Accordian from './Accordian';
+import {ScrollView} from 'react-native-gesture-handler';
+import { useSelector } from 'react-redux';
 
 const OrdersScreen = () => {
-  let _renderItem = ({item}) => {
-    return (
-      <View style={styles.orderItem}>
-        <View style={styles.orderId}>
-          <Text>Order Id : {item.Id}</Text>
-          <Text>Total : {item.total}</Text>
-        </View>
-        <Text>{moment(item.time).calendar()}</Text>
-      </View>
-    );
-  };
-
+  const orders = useSelector(state => state.orders);
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={Orders}
-        renderItem={_renderItem}
-        showsVerticalScrollIndicator={false}
-      />
-    </View>
+    <>
+      <Text style={styles.header}>ORDERS</Text>
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+        {orders.map((order) => (
+          <Accordian order={order} />
+        ))}
+      </ScrollView>
+    </>
   );
 };
 
@@ -31,20 +23,12 @@ export default OrdersScreen;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#141067',
+    backgroundColor: '#eaeded',
+    paddingHorizontal: 8,
   },
-  orderItem: {
-    backgroundColor: '#ddd',
-    margin: 5,
+  header: {
+    fontSize: 20,
     padding: 10,
-    borderRadius: 5,
-    shadowColor: 'black',
-    shadowOpacity: 0.9,
-    elevation: 5,
-  },
-  orderId: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignSelf: 'center',
   },
 });

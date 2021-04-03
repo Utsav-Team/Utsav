@@ -10,12 +10,18 @@ const isFirstTimeAlreadyLoaded = async (navigation) => {
         AsyncStorage.setItem('isFirstTimeLoaded', JSON.stringify(false));
         navigation.navigate('AuthScreen', {isFirstTimeLoaded: true});
       } else {
-        navigation.navigate('AuthScreen', {isFirstTimeLoaded: false});
+        AsyncStorage.getItem('UserDetails').then(user => {
+          if(user == null){
+            navigationObj.navigate('MainTabNavigator');
+          }
+          else{
+            navigation.navigate('AuthScreen', {isFirstTimeLoaded: false});}
+        })
       }
     })
     .catch((err) => {
       console.log(
-        'Error while loading isFirstTimeLoaded from Async Storage >>> ',
+        'Error while loading from Async Storage >>> ',
         err,
       );
     });
