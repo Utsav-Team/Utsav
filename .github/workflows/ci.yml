@@ -3,7 +3,7 @@ name: Continuous Integeration
 on:
   push:
     branches:
-      - workflow-test
+      - new_ui
 
 jobs:
   install-and-test:
